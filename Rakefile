@@ -5,20 +5,21 @@ require 'rake/clean'
 require 'fileutils'
 require 'find'
 require 'rspec/core/rake_task'
-require 'puppetlabs_spec_helper/rake_tasks'
+require 'simp/rake/beaker'
 
+@package='simp-beaker-helpers'
+@rakefile_dir=File.dirname(__FILE__)
+
+Simp::Rake::Beaker.new(@rakefile_dir)
 
 ['spec','syntax','syntax:hiera','syntax:manifests','syntax:templates','lint','metadata'].each do |task|
   Rake::Task[task].clear
 end
 
-@package='simp-beaker-helpers'
-@rakefile_dir=File.dirname(__FILE__)
-
-
 CLEAN.include "#{@package}-*.gem"
 CLEAN.include 'pkg'
 CLEAN.include 'dist'
+CLEAN.include '.vendor'
 Find.find( @rakefile_dir ) do |path|
   if File.directory? path
     CLEAN.include path if File.basename(path) == 'tmp'
@@ -44,6 +45,12 @@ task :help do
 SIMP_RPM_BUILD     when set, alters the gem produced by pkg:gem to be RPM-safe.
                    'pkg:gem' sets this automatically.
   }
+end
+
+desc "Run spec tests"
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.rspec_opts = ['--color']
+  t.pattern = 'spec/lib/**/*_spec.rb'
 end
 
 desc %q{run all RSpec tests (alias of 'spec')}

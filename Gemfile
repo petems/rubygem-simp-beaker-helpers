@@ -13,10 +13,12 @@ gem 'bundler'
 gem 'rake'
 
 group :system_tests do
-  gem 'pry'
   gem 'beaker'
   gem 'beaker-rspec'
+  gem 'beaker-windows'
   gem 'net-ssh'
+  gem 'puppet', ENV.fetch('PUPPET_VERSION', '~> 5.0')
   gem 'puppetlabs_spec_helper'
-  gem 'puppet', ENV.fetch('PUPPET_VERSION', '~> 4.0')
+  gem 'rubocop'
+  gem 'rubocop-rspec'
 end
